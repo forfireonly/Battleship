@@ -1,0 +1,20 @@
+type: hyperskill
+title: Battleship
+language: English
+summary: Writing games is probably one of the most exciting tasks in programming.
+  Develop your own version of the popular "Battleship Game" to play with your friends!<br/><br/>Learn
+  more at <a href="https://hyperskill.org">https://hyperskill.org/projects/125</a>
+programming_language: Java
+programming_language_version: 11
+content:
+- Battleship
+- Problems (1)
+- Problems (2)
+- Problems (3)
+- Problems (4)
+- Problems (5)
+- Problems (6)
+- Problems (7)
+- Problems (8)
+- Problems (9)
+mode: Study

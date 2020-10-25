@@ -1,0 +1,9 @@
+# Project exclude paths
+/.gradle/
+/Battleship/task/build/
+/Battleship/task/out/
+/Battleship/task/out/production/classes/
+/Problems/Throw an IOException/out/
+/Problems/Throw an IOException/out/production/classes/
+/Problems (1)/Throw an IOException/out/
+/Problems (1)/Throw an IOException/out/production/classes/
