@@ -31,7 +31,7 @@ public class Main {
 
         System.out.println("The game starts!\n");
 
-        newGame.displayField();
+        newGame.displayFieldOfWar();
         newGame.runGame();
 
 

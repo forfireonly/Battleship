@@ -5,6 +5,8 @@ import java.io.IOException;
 public class GameField {
     static String[] letters = {"A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "J "};
     public String[][] field = new String[10][10];
+    public String[][] fieldInFog = new String[10][10];
+
     Coordinates coordinates = new Coordinates();
 
     public String[][] forbidenCoordinates = new String[12][12];
@@ -31,18 +33,22 @@ public class GameField {
             }
         }
         if (field[Coordinates.letterColum.get(letter)][number - 1].equals("O ")) {
+            fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "X ";
+            field[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             System.out.println();
+            displayFieldOfWar();
             System.out.println();
             System.out.println("You hit a ship!");
             System.out.println();
-            field[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             displayField();
         } else if (field[Coordinates.letterColum.get(letter)][number - 1].equals("~ ")) {
+            fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "M ";
+            field[Coordinates.letterColum.get(letter)][number - 1] = "M ";
             System.out.println();
+            displayFieldOfWar();
             System.out.println();
             System.out.println("You missed!");
             System.out.println();
-            field[Coordinates.letterColum.get(letter)][number - 1] = "M ";
             displayField();
         }
     }
@@ -59,7 +65,20 @@ public class GameField {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 field[i][j] = "~ ";
+                fieldInFog[i][j] = "~ ";
             }
+        }
+    }
+
+    public void displayFieldOfWar() {
+        System.out.println();
+        System.out.println("  1 2 3 4 5 6 7 8 9 10");
+        for (int i = 0; i < 10; i++) {
+            System.out.print(letters[i]);
+            for (int j = 0; j < 10; j++) {
+                System.out.print(fieldInFog[i][j]);
+            }
+            System.out.println();
         }
     }
 
