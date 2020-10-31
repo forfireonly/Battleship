@@ -6,6 +6,7 @@ public class GameField {
     static String[] letters = {"A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "J "};
     public String[][] field = new String[10][10];
     public String[][] fieldInFog = new String[10][10];
+    int isSunk = 0;
 
     Coordinates coordinates = new Coordinates();
 
@@ -25,7 +26,25 @@ public class GameField {
         System.out.println("You sank the last ship. You won. Congratulations!");
     }
 
-    public boolean checkSunk(int x, int y) {
+    public int checkSunk(int x, int y) {
+        int numberNeighbors = 0;
+
+        if (sunkenShips[x - 1][y].equals("O ")) {
+            numberNeighbors += 1;
+        }
+        if (sunkenShips[x][y - 1].equals("O ")) {
+            numberNeighbors += 1;
+        }
+        if (sunkenShips[x][y + 1].equals("O ")) {
+            numberNeighbors += 1;
+        }
+        if (sunkenShips[x + 1][y].equals("O ")) {
+            numberNeighbors += 1;
+        }
+        return numberNeighbors;
+    }
+
+    /*public boolean checkSunk(int x, int y) {
         boolean isSunk = true;
 
         if (sunkenShips[x - 1][y].equals("O ") || sunkenShips[x][y - 1].equals("O ") ||
@@ -33,7 +52,7 @@ public class GameField {
             isSunk = false;
         }
         return isSunk;
-    }
+    }*/
 
     public void runGame() throws IOException {
         boolean isRight = false;
@@ -59,7 +78,7 @@ public class GameField {
             }
         }
         if (field[Coordinates.letterColum.get(letter)][number - 1].equals("O ")) {
-            boolean isSunk = false;
+
             fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             field[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             sunkenShips[Coordinates.letterColum.get(letter) + 1][number - 1 + 1] = "X ";
@@ -67,12 +86,13 @@ public class GameField {
             int y = number - 1 + 1;
             System.out.println();
             displayFieldOfWar();
-            isSunk = checkSunk(x, y);
+            isSunk += checkSunk(x, y);
             shipCount -= 1;
-            if (!isSunk) {
+            if (isSunk > 0) {
                 System.out.println();
                 System.out.println("You hit a ship! Try again:");
                 System.out.println();
+                isSunk -= 1;
             } else {
                 System.out.println();
                 System.out.println("You sank a ship! Specify a new target: ");
