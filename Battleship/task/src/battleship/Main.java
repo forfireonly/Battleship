@@ -29,12 +29,11 @@ public class Main {
         newGame.setTheField();
         newGame.displayField();
 
-        System.out.println("The game starts!\n");
+        System.out.println();
+        System.out.println("The game starts! ");
 
         newGame.displayFieldOfWar();
-        newGame.runGame();
-
-
-
+        newGame.play();
     }
 }
+

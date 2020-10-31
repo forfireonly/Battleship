@@ -10,21 +10,47 @@ public class GameField {
     Coordinates coordinates = new Coordinates();
 
     public String[][] forbidenCoordinates = new String[12][12];
+    public String[][] sunkenShips = new String[12][12];
+
+    int shipCount = 17;
+
+    public void play() throws IOException {
+        System.out.println();
+        System.out.println("Take a shot!");
+        System.out.println();
+        while (shipCount > 0) {
+            runGame();
+        }
+        System.out.println();
+        System.out.println("You sank the last ship. You won. Congratulations!");
+    }
+
+    public boolean checkSunk(int x, int y) {
+        boolean isSunk = true;
+
+        if (sunkenShips[x - 1][y].equals("O ") || sunkenShips[x][y - 1].equals("O ") ||
+                sunkenShips[x][y + 1].equals("O ") || sunkenShips[x + 1][y].equals("O ")) {
+            isSunk = false;
+        }
+        return isSunk;
+    }
 
     public void runGame() throws IOException {
         boolean isRight = false;
         String[] coordinates = new String[2];
         String letter = "";
         int number = 0;
-        System.out.println();
-        System.out.println("Take a shot!");
-        System.out.println();
 
         while (!isRight) {
             coordinates = Main.reader.readLine().split("");
             letter = coordinates[0];
-            number = Integer.parseInt(coordinates[1]);
-            if (letter.matches("[A-J]") && number > 0 && number < 11 && coordinates.length == 2) {
+            if (coordinates.length == 2) {
+                number = Integer.parseInt(coordinates[1]);
+            } else if (coordinates.length == 3) {
+                number = Integer.parseInt(coordinates[1] + coordinates[2]);
+            }
+
+            if (letter.matches("[A-J]") && number > 0 && number < 11) {
                 isRight = true;
             } else {
                 System.out.println();
@@ -33,23 +59,39 @@ public class GameField {
             }
         }
         if (field[Coordinates.letterColum.get(letter)][number - 1].equals("O ")) {
+            boolean isSunk = false;
             fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             field[Coordinates.letterColum.get(letter)][number - 1] = "X ";
+            sunkenShips[Coordinates.letterColum.get(letter) + 1][number - 1 + 1] = "X ";
+            int x = Coordinates.letterColum.get(letter) + 1;
+            int y = number - 1 + 1;
             System.out.println();
             displayFieldOfWar();
-            System.out.println();
-            System.out.println("You hit a ship!");
-            System.out.println();
-            displayField();
+            isSunk = checkSunk(x, y);
+            shipCount -= 1;
+            if (!isSunk) {
+                System.out.println();
+                System.out.println("You hit a ship! Try again:");
+                System.out.println();
+            } else {
+                System.out.println();
+                System.out.println("You sank a ship! Specify a new target: ");
+                System.out.println();
+            }
         } else if (field[Coordinates.letterColum.get(letter)][number - 1].equals("~ ")) {
             fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "M ";
             field[Coordinates.letterColum.get(letter)][number - 1] = "M ";
             System.out.println();
             displayFieldOfWar();
             System.out.println();
-            System.out.println("You missed!");
+            System.out.println("You missed! Try again: ");
             System.out.println();
-            displayField();
+        } else if (field[Coordinates.letterColum.get(letter)][number - 1].equals("X ")) {
+            System.out.println();
+            displayFieldOfWar();
+            System.out.println();
+            System.out.println("Error! You hit a ship! Try again: ");
+            System.out.println();
         }
     }
 
@@ -57,6 +99,7 @@ public class GameField {
         for (int i = 0; i < forbidenCoordinates.length; i++) {
             for (int j = 0; j < forbidenCoordinates.length; j++) {
                 forbidenCoordinates[i][j] = "~";
+                sunkenShips[i][j] = "~";
             }
         }
     }
@@ -95,7 +138,6 @@ public class GameField {
     }
 
 
-
     public void inputSetcoordinates(Coordinates coordinates) throws IOException {
         String[] airacraftCarierTwoCoordinates = Main.reader.readLine().split(" ");
         String[] firstCoordinate = airacraftCarierTwoCoordinates[0].split("");
@@ -121,7 +163,6 @@ public class GameField {
         while (!isCorrect) {
             inputSetcoordinates(coordinates);
             isCorrect = coordinates.checkLength("carrier");
-
         }
     }
 
@@ -159,9 +200,7 @@ public class GameField {
         while (!isCorrect) {
             inputSetcoordinates(coordinates);
             isCorrect = coordinates.checkLength("cruiser") && checkProximity();
-
         }
-
     }
 
     public void setDestroyer() throws IOException {
@@ -173,9 +212,7 @@ public class GameField {
         while (!isCorrect) {
             inputSetcoordinates(coordinates);
             isCorrect = coordinates.checkLength("destroyer") && checkProximity();
-
         }
-
     }
 
     public void setTheField() {
@@ -209,6 +246,7 @@ public class GameField {
                 int y = i + 1;
                 int x = firstCoordinateFirst + 1;
                 field[firstCoordinateFirst][i] = "O ";
+                sunkenShips[x][y] = "O ";
                 forbidenCoordinates[x][y] = "F";
                 forbidenCoordinates[x - 1][y - 1] = "F";
                 forbidenCoordinates[x - 1][y] = "F";
@@ -224,6 +262,7 @@ public class GameField {
                 int x = i + 1;
                 int y = firstCoordinateSecond + 1;
                 field[i][firstCoordinateSecond] = "O ";
+                sunkenShips[x][y] = "O ";
                 forbidenCoordinates[i][firstCoordinateSecond] = "F";
                 forbidenCoordinates[x - 1][y - 1] = "F";
                 forbidenCoordinates[x - 1][y] = "F";
@@ -236,42 +275,42 @@ public class GameField {
             }
         }
     }
-     public boolean checkProximity() {
 
-         boolean isFar = true;
+    public boolean checkProximity() {
 
-             String firstCoordinateLetter = coordinates.getFirstCoordinateLetter();
-             String firstCoordinateNumber = coordinates.getFirstCoordinateNumber();
+        boolean isFar = true;
 
-             String secondCoordinateLetter = coordinates.getSecondCoordinateLetter();
-             String secondCoordinateNumber = coordinates.getSecondCoordinateNumber();
+        String firstCoordinateLetter = coordinates.getFirstCoordinateLetter();
+        String firstCoordinateNumber = coordinates.getFirstCoordinateNumber();
 
-             int firstCoordinateFirst = Coordinates.letterColum.get(firstCoordinateLetter);
-             int firstCoordinateSecond = Integer.parseInt(firstCoordinateNumber) - 1;
-             int secondCoordinateFirst = Coordinates.letterColum.get(secondCoordinateLetter);
-             int secondCoordinateSecond = Integer.parseInt(secondCoordinateNumber) - 1;
-             int holder = 0;
+        String secondCoordinateLetter = coordinates.getSecondCoordinateLetter();
+        String secondCoordinateNumber = coordinates.getSecondCoordinateNumber();
 
-             if (secondCoordinateFirst < firstCoordinateFirst) {
-                 holder = secondCoordinateFirst;
-                 secondCoordinateFirst = firstCoordinateFirst;
-                 firstCoordinateFirst = holder;
-             }
+        int firstCoordinateFirst = Coordinates.letterColum.get(firstCoordinateLetter);
+        int firstCoordinateSecond = Integer.parseInt(firstCoordinateNumber) - 1;
+        int secondCoordinateFirst = Coordinates.letterColum.get(secondCoordinateLetter);
+        int secondCoordinateSecond = Integer.parseInt(secondCoordinateNumber) - 1;
+        int holder = 0;
 
-             if (secondCoordinateSecond < firstCoordinateSecond) {
-                 holder = secondCoordinateSecond;
-                 secondCoordinateSecond = firstCoordinateSecond;
-                 firstCoordinateSecond = holder;
-             }
-             if (forbidenCoordinates[firstCoordinateFirst + 1][firstCoordinateSecond + 1].equals("F") ||
-                     forbidenCoordinates[secondCoordinateFirst + 1][secondCoordinateSecond + 1].equals("F")) {
-                 isFar = false;
-                 System.out.println();
-                 System.out.println("Error! You placed it too close to another one. Try again: ");
-                 System.out.println();
-             }
+        if (secondCoordinateFirst < firstCoordinateFirst) {
+            holder = secondCoordinateFirst;
+            secondCoordinateFirst = firstCoordinateFirst;
+            firstCoordinateFirst = holder;
+        }
 
-         return isFar;
-     }
+        if (secondCoordinateSecond < firstCoordinateSecond) {
+            holder = secondCoordinateSecond;
+            secondCoordinateSecond = firstCoordinateSecond;
+            firstCoordinateSecond = holder;
+        }
+        if (forbidenCoordinates[firstCoordinateFirst + 1][firstCoordinateSecond + 1].equals("F") ||
+                forbidenCoordinates[secondCoordinateFirst + 1][secondCoordinateSecond + 1].equals("F")) {
+            isFar = false;
+            System.out.println();
+            System.out.println("Error! You placed it too close to another one. Try again: ");
+            System.out.println();
+        }
+        return isFar;
+    }
 }
 

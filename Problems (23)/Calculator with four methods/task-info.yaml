@@ -1,0 +1,45 @@
+type: code
+files:
+- name: src/Main.java
+  visible: true
+  text: |-
+    // Don't delete this import statement
+    import java.util.Scanner;
+
+    class SimpleCalculator {
+
+        public static void main(String[] args) {
+
+            Scanner scanner = new Scanner(System.in);
+            long num1 = scanner.nextLong();
+            String operator = scanner.next();
+            long num2 = scanner.nextLong();
+
+        }
+
+        // Implement your methods here
+        public static void subtractTwoNumbers...
+
+
+        public static void sumTwoNumbers...
+
+
+        public static void divideTwoNumbers...
+
+
+        public static void multiplyTwoNumbers...
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/10576
+status: Failed
+feedback:
+  message: |
+    Compilation error
+    Main.java:69: error: cannot find symbol
+                    SimpleCalculator.divideTwoNumbers(num1, num2);
+                                    ^
+      symbol:   method divideTwoNumbers(long,long)
+      location: class SimpleCalculator
+    1 error
+  time: Fri, 30 Oct 2020 20:10:32 UTC
+record: -1

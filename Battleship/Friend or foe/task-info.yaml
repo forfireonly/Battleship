@@ -356,7 +356,11 @@ files:
 
                 for (int i = 0; i < 10; i++) {
                     String temp = splittedOutput[index].substring(2).trim();
-                    matrix[i] = temp.split(" ");
+                    String[] splittedLine = temp.trim().split(" ");
+                    if (splittedLine.length != 10) {
+                        throw cantParseException;
+                    }
+                    matrix[i] = splittedLine;
                     index++;
                 }
             } catch (IndexOutOfBoundsException ignored) {
