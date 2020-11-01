@@ -15,15 +15,36 @@ public class GameField {
 
     int shipCount = 17;
 
-    public void play() throws IOException {
-        System.out.println();
-        System.out.println("Take a shot!");
-        System.out.println();
-        while (shipCount > 0) {
-            runGame();
-        }
-        System.out.println();
-        System.out.println("You sank the last ship. You won. Congratulations!");
+    public void setShips() throws IOException {
+        fillForbiden();
+        createOriginalField();
+        displayField();
+        setCarrier();
+        setTheField();
+        displayField();
+        setBattleship();
+        setTheField();
+        displayField();
+        setSubmarine();
+        setTheField();
+        displayField();
+        setCruiser();
+        setTheField();
+        displayField();
+        setDestroyer();
+        setTheField();
+        displayField();
+    }
+
+    public boolean play() throws IOException {
+        boolean isFinished = false;
+                runGame();
+                if (shipCount == 0) {
+                    isFinished = true;
+                    System.out.println();
+                    System.out.println("You sank the last ship. You won. Congratulations!");
+                }
+        return isFinished;
     }
 
     public int checkSunk(int x, int y) {
@@ -78,39 +99,33 @@ public class GameField {
             }
         }
         if (field[Coordinates.letterColum.get(letter)][number - 1].equals("O ")) {
-
+            isSunk = 0;
             fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             field[Coordinates.letterColum.get(letter)][number - 1] = "X ";
             sunkenShips[Coordinates.letterColum.get(letter) + 1][number - 1 + 1] = "X ";
             int x = Coordinates.letterColum.get(letter) + 1;
             int y = number - 1 + 1;
-            System.out.println();
-            displayFieldOfWar();
             isSunk += checkSunk(x, y);
             shipCount -= 1;
             if (isSunk > 0) {
                 System.out.println();
-                System.out.println("You hit a ship! Try again:");
+                System.out.println("You hit a ship!\nPress Enter and pass the move to another player");
                 System.out.println();
                 isSunk -= 1;
             } else {
                 System.out.println();
-                System.out.println("You sank a ship! Specify a new target: ");
+                System.out.println("You sank a ship!\nPress Enter and pass the move to another player");
                 System.out.println();
             }
         } else if (field[Coordinates.letterColum.get(letter)][number - 1].equals("~ ")) {
             fieldInFog[Coordinates.letterColum.get(letter)][number - 1] = "M ";
             field[Coordinates.letterColum.get(letter)][number - 1] = "M ";
             System.out.println();
-            displayFieldOfWar();
-            System.out.println();
-            System.out.println("You missed! Try again: ");
+            System.out.println("You missed!\nPress Enter and pass the move to another player");
             System.out.println();
         } else if (field[Coordinates.letterColum.get(letter)][number - 1].equals("X ")) {
             System.out.println();
-            displayFieldOfWar();
-            System.out.println();
-            System.out.println("Error! You hit a ship! Try again: ");
+            System.out.println("Error! You hit a ship!\nPress Enter and pass the move to another player");
             System.out.println();
         }
     }
